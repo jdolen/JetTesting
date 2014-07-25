@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 ###############################################
-useMiniAOD = False
+useMiniAOD = True
 
 # AOD
 pfcandidates          = 'particleFlow'
@@ -40,8 +40,7 @@ print ' primaryvertices       = '+primaryvertices
 process = cms.Process("USER")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
-process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
+process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) , allowUnscheduled = cms.untracked.bool(True) )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(15) )
 
