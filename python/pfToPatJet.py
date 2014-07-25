@@ -25,7 +25,7 @@ if useMiniAOD:
   primaryvertices       = 'offlineSlimmedPrimaryVertices'
 
 
-
+print 'useMiniAOD : '+str(useMiniAOD)
 print 'pfcandidates          : '+pfcandidates         
 print 'genjetparticles       : '+genjetparticles      
 print 'importantgenparticles : '+importantgenparticles
@@ -41,28 +41,16 @@ process = cms.Process("USER")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
-#process.options.allowUnscheduled = cms.untracked.bool(True)
 process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(15) )
 
+###############################################
+# SOURCE
 process.source = cms.Source("PoolSource",
- #   eventsToSkip = cms.untracked.VEventRange('1:1:1368-1:1:1368'), 
- #   fileNames = cms.untracked.vstring(
- #    	'root://cmsxrootd-site.fnal.gov//store/user/jdolen/RSGluonToTT_M-3000_Tune4C_13TeV-pythia8/Spring14dr-PU_S14_POSTLS170_V6AN1-miniAOD706p1/140707_143029/0000/miniAOD-prod_PAT_1.root',
- #    	'root://cmsxrootd-site.fnal.gov//store/user/jdolen/RSGluonToTT_M-3000_Tune4C_13TeV-pythia8/Spring14dr-PU_S14_POSTLS170_V6AN1-miniAOD706p1/140707_143029/0000/miniAOD-prod_PAT_2.root',
- #    	'root://cmsxrootd-site.fnal.gov//store/user/jdolen/RSGluonToTT_M-3000_Tune4C_13TeV-pythia8/Spring14dr-PU_S14_POSTLS170_V6AN1-miniAOD706p1/140707_143029/0000/miniAOD-prod_PAT_3.root',
- #    	'root://cmsxrootd-site.fnal.gov//store/user/jdolen/RSGluonToTT_M-3000_Tune4C_13TeV-pythia8/Spring14dr-PU_S14_POSTLS170_V6AN1-miniAOD706p1/140707_143029/0000/miniAOD-prod_PAT_4.root',
- #    	'root://cmsxrootd-site.fnal.gov//store/user/jdolen/RSGluonToTT_M-3000_Tune4C_13TeV-pythia8/Spring14dr-PU_S14_POSTLS170_V6AN1-miniAOD706p1/140707_143029/0000/miniAOD-prod_PAT_5.root',
- #    	'root://cmsxrootd-site.fnal.gov//store/user/jdolen/RSGluonToTT_M-3000_Tune4C_13TeV-pythia8/Spring14dr-PU_S14_POSTLS170_V6AN1-miniAOD706p1/140707_143029/0000/miniAOD-prod_PAT_6.root',
- #    	'root://cmsxrootd-site.fnal.gov//store/user/jdolen/RSGluonToTT_M-3000_Tune4C_13TeV-pythia8/Spring14dr-PU_S14_POSTLS170_V6AN1-miniAOD706p1/140707_143029/0000/miniAOD-prod_PAT_7.root'
-	# )
 )
 
-
-
 if not useMiniAOD:
-    #process.source.eventsToSkip = cms.untracked.VEventRange('1:1:1368-1:1:1368'), 
     process.source.fileNames = cms.untracked.vstring(
         'root://cmsxrootd-site.fnal.gov//store/mc/Spring14dr/RSGluonToTT_M-3000_Tune4C_13TeV-pythia8/AODSIM/PU_S14_POSTLS170_V6-v1/00000/001F67AD-2BC5-E311-9A0E-003048FFD756.root',
         'root://cmsxrootd-site.fnal.gov//store/mc/Spring14dr/RSGluonToTT_M-3000_Tune4C_13TeV-pythia8/AODSIM/PU_S14_POSTLS170_V6-v1/00000/023B9A27-01C5-E311-B209-0025905A48EC.root',
@@ -71,7 +59,6 @@ if not useMiniAOD:
     )
 
 if useMiniAOD:
-    #process.source.eventsToSkip = cms.untracked.VEventRange('1:1:1368-1:1:1368'), 
     process.source.fileNames = cms.untracked.vstring(
       'root://cmsxrootd-site.fnal.gov//store/user/jdolen/RSGluonToTT_M-3000_Tune4C_13TeV-pythia8/Spring14dr-PU_S14_POSTLS170_V6AN1-miniAOD706p1/140707_143029/0000/miniAOD-prod_PAT_1.root',
       'root://cmsxrootd-site.fnal.gov//store/user/jdolen/RSGluonToTT_M-3000_Tune4C_13TeV-pythia8/Spring14dr-PU_S14_POSTLS170_V6AN1-miniAOD706p1/140707_143029/0000/miniAOD-prod_PAT_2.root',
@@ -82,6 +69,32 @@ if useMiniAOD:
       'root://cmsxrootd-site.fnal.gov//store/user/jdolen/RSGluonToTT_M-3000_Tune4C_13TeV-pythia8/Spring14dr-PU_S14_POSTLS170_V6AN1-miniAOD706p1/140707_143029/0000/miniAOD-prod_PAT_7.root'
   )
 
+###############################################
+# OUT
+outfile = '/eos/uscms/store/user/jdolen/TestJetsAOD_706p1.root'
+if useMiniAOD:
+  outfile = '/uscmst1b_scratch/lpc1/lpcphys/jdolen/TestJetsMiniAOD_706p1.root'
+
+process.out = cms.OutputModule("PoolOutputModule",
+                               fileName = cms.untracked.string(outfile),
+                               outputCommands = cms.untracked.vstring([
+                                'keep recoCATopJetTagInfos_*_*_*',  #recoCATopJetTagInfos_CATopTagInfos__USER etc.
+                                'keep patJets_patJetsAK15PF_*_*',
+                                'keep patJets_patJetsAK15PFfiltered*_*_*',
+                                'keep patJets_patJetsAK15CHS_*_*',
+                                'keep patJets_patJetsAK15CHSfiltered*_*_*',
+                                'keep patJets_patJetsCA8PF_*_*',
+                                'keep patJets_patJetsCA8PFpruned*_*_*',
+                                'keep patJets_patJetsCA8CHS_*_*',
+                                'keep patJets_patJetsCA8CHSpruned*_*_*',
+                                'keep patJets_patJetsCMSTopTagCHS*_*_*',
+                                'keep patJets_patJetsCMSTopTagFJCHS*_*_*',
+                                'keep patJets_patJetsHEPTopTagCHS*_*_*',
+                                                                       ])
+)
+
+###############################################
+# RECO AND GEN SETUP
 process.load('PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.Geometry_cff')
@@ -101,9 +114,6 @@ from RecoJets.JetProducers.AnomalousCellParameters_cfi import *
 from RecoJets.JetProducers.CATopJetParameters_cfi import *
 from RecoJets.JetProducers.GenJetParameters_cfi import *
 from RecoJets.JetProducers.caTopTaggers_cff import *
-
- # CATopTagInfos, HEPTopTagInfos
-# process.CATopTagInfos = CATopTagInfos.clone()
 
 ###############################################
 # GEN JETS
@@ -221,7 +231,6 @@ process.ca8CHSJetsPruned = process.ak4PFJetsPruned.clone(rParam=0.8, jetAlgorith
 process.ca8PFJetsPrunedNsub3  = process.ak4PFJetsPruned.clone(rParam=0.8, jetAlgorithm = cms.string("CambridgeAachen"), nFilt=3, doAreaFastjet = True, src = pfcandidates)
 process.ca8CHSJetsPrunedNsub3 = process.ak4PFJetsPruned.clone(rParam=0.8, jetAlgorithm = cms.string("CambridgeAachen"), nFilt=3, doAreaFastjet = True, src = chsstring)
 
-
 # CATopJet PF Jets with adjacency 
 #process.cmsTopTagCHS = cmsTopTagPFJetsCHS.clone()
 process.cmsTopTagCHS = cms.EDProducer(
@@ -234,12 +243,12 @@ process.cmsTopTagCHS = cms.EDProducer(
     AnomalousCellParameters,
     CATopJetParameters.clone( jetCollInstanceName = cms.string("SubJets"), 
                               verbose = cms.bool(False),
-                              algorithm = cms.int32(1), # 0 = KT, 1 = CA, 2 = anti-KT
-                              tagAlgo = cms.int32(0), #0=legacy top
-                              useAdjacency = cms.int32(2), # modified adjacency
-                              centralEtaCut = cms.double(2.5), # eta for defining "central" jets
-                              sumEtBins = cms.vdouble(0,1600,2600), # sumEt bins over which cuts vary. vector={bin 0 lower bound, bin 1 lower bound, ...}
-                              rBins = cms.vdouble(0.8,0.8,0.8), # Jet distance paramter R. R values depend on sumEt bins.
+                              algorithm = cms.int32(1),                 # 0 = KT, 1 = CA, 2 = anti-KT
+                              tagAlgo = cms.int32(0),                   #0=legacy top
+                              useAdjacency = cms.int32(2),              # modified adjacency
+                              centralEtaCut = cms.double(2.5),          # eta for defining "central" jets
+                              sumEtBins = cms.vdouble(0,1600,2600),     # sumEt bins over which cuts vary. vector={bin 0 lower bound, bin 1 lower bound, ...}
+                              rBins = cms.vdouble(0.8,0.8,0.8),         # Jet distance paramter R. R values depend on sumEt bins.
                               ptFracBins = cms.vdouble(0.05,0.05,0.05), # minimum fraction of central jet pt for subjets (deltap)
                               deltarBins = cms.vdouble(0.19,0.19,0.19), # Applicable only if useAdjacency=1. deltar adjacency values for each sumEtBin
                               nCellBins = cms.vdouble(1.9,1.9,1.9), 
@@ -288,43 +297,6 @@ process.hepTopTagCHSTagInfos = process.CATopTagInfos.clone(
   src = cms.InputTag("hepTopTagCHS")
 )
 
-# CATopJetParameters = cms.PSet(
-#     jetCollInstanceName = cms.string("caTopSubJets"), # subjet collection
-#     verbose = cms.bool(False),
-#     algorithm = cms.int32(1), # 0 = KT, 1 = CA, 2 = anti-KT
-#     tagAlgo = cms.int32(0), #choice of top tagging algorithm
-#     useAdjacency = cms.int32(2), # veto adjacent subjets
-# # 0 = no adjacency
-# # 1 = deltar adjacency
-#                                                         # 2 = modified adjacency
-#                                                         # 3 = calotower neirest neigbor based adjacency (untested)
-#     centralEtaCut = cms.double(2.5), # eta for defining "central" jets
-#     sumEtBins = cms.vdouble(0,1600,2600), # sumEt bins over which cuts vary. vector={bin 0 lower bound, bin 1 lower bound, ...}
-#     rBins = cms.vdouble(0.8,0.8,0.8), # Jet distance paramter R. R values depend on sumEt bins.
-#     ptFracBins = cms.vdouble(0.05,0.05,0.05), # minimum fraction of central jet pt for subjets (deltap)
-# deltarBins = cms.vdouble(0.19,0.19,0.19), # Applicable only if useAdjacency=1. deltar adjacency values for each sumEtBin
-# nCellBins = cms.vdouble(1.9,1.9,1.9), 
-
-#0  CA_TOPTAGGER,
-#1 FJ_CMS_TOPTAG,
-#2 FJ_HEP_TOPTAG,
-#3 FJ_JHU_TOPTAG,
-
-
-# process.caHEPTopTagPFlow = process.caTopTagPFlow.clone(
-#   rParam = cms.double(1.5),
-#   tagAlgo = cms.int32(2)
-# )
-
-# hepTopTagPFJetsCHS = cmsTopTagPFJetsCHS.clone(
-#     rParam = cms.double(1.5),
-#     tagAlgo = cms.int32(2),
-#     muCut = cms.double(0.8),
-#     maxSubjetMass = cms.double(30.0),
-#     useSubjetMass = cms.bool(False)
-# )
-
-
 ###############################################
 # PAT JETS
 from PhysicsTools.PatAlgos.tools.jetTools import *
@@ -339,7 +311,6 @@ process.ak5JetTracksAssociatorAtVertexPF.tracks = cms.InputTag(tracks)
 process.impactParameterTagInfos.primaryVertex = cms.InputTag(vertices)
 process.inclusiveSecondaryVertexFinderTagInfos.extSVCollection = cms.InputTag(mergedvertices,mergedvertices2,"")
 process.combinedSecondaryVertex.trackMultiplicityMin = 1
-
 
 #AK15PF
 addJetCollection(
@@ -701,9 +672,6 @@ process.patJetsCMSTopTagFJCHSPacked = cms.EDProducer("BoostedJetMerger",
     subjetSrc=cms.InputTag("patJetsCMSTopTagFJCHSSubjets")
       )
 
-
-
-
 # patJetsHEPTopTagCHS
 addJetCollection(
     process,
@@ -812,30 +780,9 @@ for jetcoll in (process.patJetsAK15PF,
 #       closeFileFast = cms.untracked.bool(True)
 #   )
 
+
 ###############################################
 # PATHS
-outfile = '/eos/uscms/store/user/jdolen/TestJetsAOD_706p1_verybig.root'
-#outfile = '/uscmst1b_scratch/lpc1/lpcphys/jdolen/TestJetsAOD_706p1_verybig.root'
-if useMiniAOD:
-  outfile = '/uscmst1b_scratch/lpc1/lpcphys/jdolen/TestJetsMiniAOD_706p1_verybig.root'
-
-process.out = cms.OutputModule("PoolOutputModule",
-                               fileName = cms.untracked.string(outfile),
-                               outputCommands = cms.untracked.vstring([
-                                'keep recoCATopJetTagInfos_*_*_*',  #recoCATopJetTagInfos_CATopTagInfos__USER etc.
-                                'keep patJets_patJetsAK15PF_*_*',
-                                'keep patJets_patJetsAK15PFfiltered*_*_*',
-                                'keep patJets_patJetsAK15CHS_*_*',
-                                'keep patJets_patJetsAK15CHSfiltered*_*_*',
-                                'keep patJets_patJetsCA8PF_*_*',
-                                'keep patJets_patJetsCA8PFpruned*_*_*',
-                                'keep patJets_patJetsCA8CHS_*_*',
-                                'keep patJets_patJetsCA8CHSpruned*_*_*',
-                                'keep patJets_patJetsCMSTopTagCHS*_*_*',
-                                'keep patJets_patJetsCMSTopTagFJCHS*_*_*',
-                                'keep patJets_patJetsHEPTopTagCHS*_*_*',
-                                                                       ])
-)
 
 process.content = cms.EDAnalyzer("EventContentAnalyzer")
 
@@ -894,6 +841,6 @@ process.p = cms.Path(
   *process.patJetsHEPTopTagCHSSubjets
   *process.patJetsHEPTopTagCHSPacked
   #*process.content
-  # *process.ana
+  #*process.ana
   )
 process.end = cms.EndPath(process.out)
