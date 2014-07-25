@@ -25,15 +25,15 @@ if useMiniAOD:
   primaryvertices       = 'offlineSlimmedPrimaryVertices'
 
 
-print 'useMiniAOD : '+str(useMiniAOD)
-print 'pfcandidates          : '+pfcandidates         
-print 'genjetparticles       : '+genjetparticles      
-print 'importantgenparticles : '+importantgenparticles
-print 'tracks                : '+tracks               
-print 'vertices              : '+vertices             
-print 'mergedvertices        : '+mergedvertices       
-print 'mergedvertices2       : '+mergedvertices2      
-print 'primaryvertices       : '+primaryvertices 
+print 'useMiniAOD = '+str(useMiniAOD)
+print ' pfcandidates          = '+pfcandidates         
+print ' genjetparticles       = '+genjetparticles      
+print ' importantgenparticles = '+importantgenparticles
+print ' tracks                = '+tracks               
+print ' vertices              = '+vertices             
+print ' mergedvertices        = '+mergedvertices       
+print ' mergedvertices2       = '+mergedvertices2      
+print ' primaryvertices       = '+primaryvertices 
 
 ###############################################
 # SETUP
